@@ -5,10 +5,12 @@ import re
 import MySQLdb
 import os
 import shutil
+import traceback
 
 proxy_handler = urllib2.ProxyHandler({'http': '127.0.0.1:8087'})
 null_proxy_handler = urllib2.ProxyHandler({})
 
+#抓取一个宠物信息
 def getOne(number):
     monsterData = {}
     monsterData['id'] = number
@@ -88,6 +90,7 @@ def getOne(number):
 
     return monsterData
 
+#抓取宠物信息
 def monsterSpider():
     maxNumber = input('请输入上限:\n')
     
@@ -117,4 +120,69 @@ def monsterSpider():
         cur.close()
         conn.close()
 
-monsterSpider()
+#抓取地下城信息
+def dungeonsSpider():
+    conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
+    cur = conn.cursor()
+    conn.select_db('pad')
+
+    results = {}
+
+    try:
+        url = 'http://pad.skyozora.com/javascript/stage-clear.js'
+        content = urllib2.urlopen(url).read()
+        content = content[content.find('function dataHierarchy(){') + len('function dataHierarchy(){') + 1 : content.find('dataTree=dataHierarchy();') - 2]       
+        allDungeons = content.split('\n\n')
+
+        #allDungeons = [allDungeons[0]]
+        for dungeons in allDungeons:
+            temp = dungeons.strip('\n').split('\n')
+            namePattern = re.compile(r'var (.*?)=')
+            name = re.findall(namePattern, temp[0])[0]
+
+            if(name != 'output'):
+                nodes = temp[2:]
+                for node in nodes:
+                    nodeDataPattern = re.compile(r'\((.*?)\)')
+                    nodeData = re.findall(nodeDataPattern, node)
+                    tempNode = nodeData[0].split(',')
+                    tempNodePattern = re.compile(r'\"(.*?)\"')
+                    level2Name = re.findall(tempNodePattern, tempNode[0])[0]
+                    cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level2Name,2])
+                    conn.commit()
+                    cur.execute('select `id` from `dungeons` where `name` like \'' + level2Name + '\'')
+                    level2id = cur.fetchone()[0]
+                    if(not results.has_key(name)):
+                        results[name] = []
+                    results[name].append(level2id)
+                    level3Name = tempNode[1:]
+                    for i in range(len(level3Name)):
+                        level3Name[i] = re.findall(tempNodePattern, level3Name[i])[0]
+                        cur.execute('insert into dungeons(name,level,father_id) values(%s,%s,%s)', [level3Name[i],3,level2id])            
+            else:
+                nodes = temp[2:-1]
+                for node in nodes:
+                    nodeDataPattern = re.compile(r'\((.*?)\)')
+                    nodeData = re.findall(nodeDataPattern, node)
+                    tempNode = nodeData[0].split(',')
+                    tempNodePattern = re.compile(r'\"(.*?)\"')
+                    level1Name = re.findall(tempNodePattern, tempNode[0])[0]
+                    level2Name = tempNode[1].strip(' ')
+                    cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level1Name,1])
+                    conn.commit()
+                    cur.execute('select `id` from `dungeons` where `name` like \'' + level1Name + '\'')
+                    level1id = cur.fetchone()[0]
+                    for j in results[level2Name]:
+                        cur.execute('update dungeons set father_id = ' + str(level1id) + ' where id = ' + str(j))
+    except Exception, e:
+        exstr = traceback.format_exc()
+        print exstr
+    finally:
+        conn.commit()
+        cur.close()
+        conn.close()
+
+
+def main():
+    #monsterSpider()
+    #dungeonsSpider()
