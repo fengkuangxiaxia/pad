@@ -158,7 +158,7 @@ def dungeonsSpider():
                     level3Name = tempNode[1:]
                     for i in range(len(level3Name)):
                         level3Name[i] = re.findall(tempNodePattern, level3Name[i])[0]
-                        cur.execute('insert into dungeons(name,level,father_id) values(%s,%s,%s)', [level3Name[i],3,level2id])            
+                        cur.execute('insert ignore into dungeons(name,level,father_id) values(%s,%s,%s)', [level3Name[i],3,level2id])            
             else:
                 nodes = temp[2:-1]
                 for node in nodes:
