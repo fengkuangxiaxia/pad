@@ -50,6 +50,7 @@ def getOne(number):
                 except:
                     os.remove(path)
                     shutil.copyfile('./website/public/img/monsters/0.jpg', path)
+                    print str(number) + ' img error'
                 finally:
                     f.close()
                     opener = urllib2.build_opener(null_proxy_handler)
@@ -87,28 +88,33 @@ def getOne(number):
 
     return monsterData
 
-def main():
+def monsterSpider():
+    maxNumber = input('请输入上限:\n')
+    
     conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
     cur = conn.cursor()
     conn.select_db('pad')
     
     results = []
-    for i in range(310):
-        print i
-        cur.execute('select count(*) from monsters where id = ' + str(1 + i))
-        count = cur.fetchone()
-        count = count[0]
+    try:
+        for i in range(int(maxNumber)):
+            cur.execute('select count(*) from monsters where id = ' + str(1 + i))
+            count = cur.fetchone()
+            count = count[0]
+            
+            if(count == 0):
+                print i + 1
+                temp = getOne(1 + i)
+                if(temp['name'] != ''):
+                    results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
+    except:
+        print str(results[-1][0] + 1) + " getOne error"
+    finally:
+        cur.executemany('insert into monsters values(%s,%s,%s,%s)', results)
+        conn.commit()
         
-        if(count == 0):
-            temp = getOne(1 + i)
-            if(temp['name'] != ''):
-                results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
-    
-    cur.executemany('insert into monsters values(%s,%s,%s,%s)', results)
-    conn.commit()
-    
-    #print results
-    cur.close()
-    conn.close()
+        #print results
+        cur.close()
+        conn.close()
 
-main()
+monsterSpider()
