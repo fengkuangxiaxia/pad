@@ -182,7 +182,23 @@ def dungeonsSpider():
         cur.close()
         conn.close()
 
+#获取一个地下城的通关队伍
+def getOneTeam(dungeonName):
+    url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
+    content = urllib2.urlopen(url).read()
+
+    teamPattern = re.compile(r'<table(.*?)</table>')
+    teams = re.findall(teamPattern, content)
+
+    with open('./a.txt','wb') as f:
+        #for i in teams:
+        #    f.write(i + '\n')
+        f.write(content)
+    f.close()
 
 def main():
     #monsterSpider()
     #dungeonsSpider()
+    getOneTeam('幻の双子龍')
+
+main()
