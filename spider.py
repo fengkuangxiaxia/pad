@@ -184,18 +184,61 @@ def dungeonsSpider():
 
 #获取一个地下城的通关队伍
 def getOneTeam(dungeonName):
-    url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
+    #url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
+    url = 'http://localhost/pad/a.html'
     content = urllib2.urlopen(url).read()
 
-    teamPattern = re.compile(r'<table(.*?)</table>')
-    teams = re.findall(teamPattern, content)
-
-    with open('./a.txt','wb') as f:
-        #for i in teams:
-        #    f.write(i + '\n')
-        f.write(content)
+    temp = []
+    while(content.find('<table') != -1):
+        start = content.find('<table')
+        end = content.find('</table>')
+        temp.append(content[start:end + len('</table>')])
+        content = content[end + len('</table>'):]
+    allData = ''
+    for i in temp:
+        if((i.find('關卡') != -1) and (i.find('隊長') != -1) and (i.find('隊員') != -1)):
+            allData = i
+            break
+    '''
+    with open('./b.html','wb') as f:
+        f.write(allData)
     f.close()
+    '''
 
+    allData = allData[allData.find('<td height=6 colspan=9></td>'):]
+    teams = []
+    team = []
+    while(allData.find('<td') != -1):
+        start = allData.find('<td')
+        end = allData.find('</td>')
+        temp = allData[start:end + len('</td>')]
+        team.append(temp)
+        allData = allData[end + len('</td>'):]
+        
+        if(temp.find('<a href=\"team/') != -1):
+            teams.append(team)
+            team = []
+        
+    teams.append(team)
+    
+    results = []
+    for i in teams:
+        result = []
+
+        hpPattern = re.compile(r'<b>(.*?)</b>')
+        hp = re.findall(hpPattern, i)
+
+        result.append(hp)
+        
+        results.append(result)
+    
+    with open('./b.html','wb') as f:
+        for i in results:
+            for j in i:
+                f.write(j + '\n')
+            f.write('\n')
+    f.close()
+    
 def main():
     #monsterSpider()
     #dungeonsSpider()
