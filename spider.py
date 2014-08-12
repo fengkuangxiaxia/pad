@@ -6,7 +6,11 @@ import MySQLdb
 import os
 import shutil
 import traceback
-
+'''
+import sys
+reload(sys)   
+sys.setdefaultencoding('utf8')
+'''
 proxy_handler = urllib2.ProxyHandler({'http': '127.0.0.1:8087'})
 null_proxy_handler = urllib2.ProxyHandler({})
 
@@ -203,64 +207,126 @@ def dungeonsSpider():
 
 #获取一个地下城的通关队伍
 def getOneTeam(dungeonName):
-    #url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
-    url = 'http://localhost/pad/a.html'
+    url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
+    #url = 'http://localhost/pad/a.html'
     content = urllib2.urlopen(url).read()
 
-    temp = []
-    while(content.find('<table') != -1):
-        start = content.find('<table')
-        end = content.find('</table>')
-        temp.append(content[start:end + len('</table>')])
-        content = content[end + len('</table>'):]
-    allData = ''
-    for i in temp:
+    #页数
+    pagePattern = re.compile(r'共 <font color=yellow><strong>\d*?</strong></font> 頁')
+    page = re.findall(pagePattern, content)
+    page = page[0]
+    page = page[page.find('<strong>') + len('<strong>'):page.find('</strong>')]
+    
+    #原始数据,获取table标签间的主体数据
+    teamsPattern = re.compile(r'<table(.*?)</table>', re.DOTALL)
+    teamsRaw = re.findall(teamsPattern, content)
+
+    for i in teamsRaw:
         if((i.find('關卡') != -1) and (i.find('隊長') != -1) and (i.find('隊員') != -1)):
-            allData = i
+            teamsRaw = '<table' + i + '</table>'
             break
-    '''
-    with open('./b.html','wb') as f:
-        f.write(allData)
-    f.close()
-    '''
 
-    allData = allData[allData.find('<td height=6 colspan=9></td>'):]
+    #按td标签切割为行
+    linesPattern = re.compile(r'<td(.*?)</td>', re.DOTALL)
+    lines = re.findall(linesPattern, teamsRaw)
+
+    for i in range(len(lines)):
+        lines[i] = '<td' + lines[i] + '</td>'
+
+    #组装行成为一组组,每组代表一支队伍的原始数据
+    i = 0
+    while((i < len(lines)) and (lines[i].find('<td height=6 colspan=9></td>') == -1)):
+        i = i + 1
+
+    teamsRaw = []
+    teamRaw = []
+    while(i < len(lines)):
+        teamRaw.append(lines[i])
+        if(lines[i].find('<a href="team/') != -1):
+            teamsRaw.append(teamRaw)
+            teamRaw = []
+        i = i + 1
+
     teams = []
-    team = []
-    while(allData.find('<td') != -1):
-        start = allData.find('<td')
-        end = allData.find('</td>')
-        temp = allData[start:end + len('</td>')]
-        team.append(temp)
-        allData = allData[end + len('</td>'):]
-        
-        if(temp.find('<a href=\"team/') != -1):
-            teams.append(team)
-            team = []
-        
-    teams.append(team)
-    
-    results = []
-    for i in teams:
-        result = []
+    #爬取队伍详细数据
+    for teamRaw in teamsRaw:
+        team = {}
+        hpAndStonePattern = re.compile(r'<b>(.*?)</b>')
+        hp = -1
+        stone = -1
+        monsters = []
+        monsterPattern = re.compile(r'href="pets/\d*?"')
+        description = ''
+        descriptionPattern = re.compile(r'<description class="slide">(.*?)</description>', re.DOTALL)
+        for i in teamRaw:
+            #爬取hp和魔法石用量
+            hpAndStone = re.findall(hpAndStonePattern, i)
+            if(len(hpAndStone) > 0):
+                if(hp == -1):
+                    hp = hpAndStone[0]
+                elif(stone == -1):
+                    stone = hpAndStone[0]
+                else:
+                    print hpAndStone
+            #爬取宠物
+            monster = re.findall(monsterPattern, i)
+            if(len(monster) > 0):
+                if(len(monsters) < 6):
+                    temp = monster[0]
+                    monsters.append(temp[temp.find('/') + 1:temp.rfind('\"')])
+            #爬取说明
+            desc = re.findall(descriptionPattern, i)
+            if(len(desc) > 0):
+                description = description + desc[0]
 
-        hpPattern = re.compile(r'<b>(.*?)</b>')
-        hp = re.findall(hpPattern, i)
+        team['monsters'] = monsters
+        team['hp'] = hp
+        team['stone'] = stone
+        team['description'] = description
+        teams.append(team)
 
-        result.append(hp)
-        
-        results.append(result)
-    
-    with open('./b.html','wb') as f:
-        for i in results:
-            for j in i:
-                f.write(j + '\n')
+    return page,teams   
+    '''
+    with open('./c.html','wb') as f:
+        for i in teams:
+            for j in i.keys():
+                if(j == 'monsters'):
+                    f.write(j + ':')
+                    for k in i[j]:
+                        f.write(k + ',')
+                    f.write('\n')
+                else:
+                    f.write(j + ':' + i[j] + '\n')
             f.write('\n')
     f.close()
-    
+    '''
+
+def teamsSpider():
+    conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
+    cur = conn.cursor()
+    conn.select_db('pad')
+
+    try:
+        cur.execute('select `name` from `dungeons` where `level` = 3')
+        dungeonNames = cur.fetchall()
+        
+        dungeonName = dungeonNames[-3][0]
+        dungeonName = urllib.quote(dungeonName.encode('utf8'))
+        page,teams = getOneTeam(dungeonName)
+        print page
+        
+    except Exception, e:
+        exstr = traceback.format_exc()
+        print exstr
+    finally:
+        conn.commit()
+        cur.close()
+        conn.close()
+        
 def main():
     #monsterSpider()
     #dungeonsSpider()
     #getOneTeam('幻の双子龍')
+    teamsSpider()
 
 main()
