@@ -1,13 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 3.5.1
+-- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- 主机: localhost
--- 生成日期: 2014 年 08 月 08 日 08:38
--- 服务器版本: 5.5.24-log
--- PHP 版本: 5.4.3
+-- Host: 127.0.0.1
+-- Generation Time: 2014-08-12 13:13:50
+-- 服务器版本： 5.6.17
+-- PHP Version: 5.5.12
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- 数据库: `pad`
+-- Database: `pad`
 --
 
 --
@@ -1365,6 +1365,7 @@ INSERT INTO `monsters` (`id`, `name`, `series`, `img`) VALUES
 (1344, '龍劍勝利神・弗雷', '[神] 北歐神', 'http://i.imgur.com/eVNo58x.png'),
 (1345, '永久雙星神・伊珍＆伊茲娜', '[神] 北歐神', 'http://i.imgur.com/BIJajQ3.png'),
 (1346, '煌樹豐麗神・芙蕾雅', '[神] 北歐神', 'http://i.imgur.com/PE50Twu.png'),
+(1347, '奪還雷戰神・托爾', '[神] 北歐神', 'http://i.imgur.com/oxoNGxq.png'),
 (1348, '暗躍狡知神・洛基', '[神] 北歐神', 'http://i.imgur.com/Miwzhiq.png'),
 (1349, '艾可薩・海德拉', '[合作活動] PADZ', 'http://i.imgur.com/WFmEYT8.png'),
 (1350, '塞塔・海德拉', '[合作活動] PADZ', 'http://i.imgur.com/JaDIXs5.png'),
@@ -1493,8 +1494,14 @@ INSERT INTO `monsters` (`id`, `name`, `series`, `img`) VALUES
 (1507, '閃光龍劍士', '龍劍士', 'http://i.imgur.com/ESLD04x.png'),
 (1509, '梅菲斯特', '[神] 魔神', 'http://i.imgur.com/jibxbEZ.png'),
 (1510, '覺醒梅菲斯特', '[神] 魔神', 'http://i.imgur.com/sp5trTt.png'),
+(1511, '燎火天狐・美月', '貼紙寵', 'http://i.imgur.com/Y1J9epi.png'),
+(1512, '絕海才女・流華', '貼紙寵', 'http://i.imgur.com/SwJeLNh.png'),
+(1513, '祭祀神子・歌乃', '貼紙寵', 'http://i.imgur.com/TtFejDe.png'),
+(1514, '遊牧舞姫・楓', '貼紙寵', 'http://i.imgur.com/OiLxUPz.png'),
+(1515, '幽幻貓妖・黑音', '貼紙寵', 'http://i.imgur.com/7zroyL6.png'),
 (1516, '爽乙女・瓦爾奇琳公主', '攻撃態勢英雄', 'http://i.imgur.com/1qdIXX6.png'),
-(1517, '茨戒爽姫・優雅女武神', '攻撃態勢英雄', 'http://i.imgur.com/5JqU4st.png');
+(1517, '茨戒爽姫・優雅女武神', '攻撃態勢英雄', 'http://i.imgur.com/5JqU4st.png'),
+(1518, '樂園管理者・米達倫', '[神] 大天使', 'http://i.imgur.com/BP6BZe7.png');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
