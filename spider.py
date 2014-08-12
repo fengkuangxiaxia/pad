@@ -326,7 +326,6 @@ def teamsSpider():
 def main():
     #monsterSpider()
     #dungeonsSpider()
-    #getOneTeam('幻の双子龍')
-    teamsSpider()
+    #teamsSpider()
 
 main()
