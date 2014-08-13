@@ -15,7 +15,7 @@ class CreateTeamsTable extends Migration {
 		Schema::create('teams', function($table) {
             $table->increments('id');
             
-            $table->integer('leader_id')->unsigned()->nullable();
+            $table->integer('leader_id')->unsigned();
             $table->integer('monster1_id')->unsigned()->nullable();
             $table->integer('monster2_id')->unsigned()->nullable();
             $table->integer('monster3_id')->unsigned()->nullable();
@@ -29,9 +29,14 @@ class CreateTeamsTable extends Migration {
             $table->foreign('monster4_id')->references('id')->on('monsters')->onDelete('cascade');
             $table->foreign('friend_id')->references('id')->on('monsters')->onDelete('cascade');
             
+            $table->integer('dungeon_id')->unsigned();
+            $table->foreign('dungeon_id')->references('id')->on('dungeons')->onDelete('cascade');
+            
             $table->integer('hp');
 		    $table->integer('stone');
 		    $table->text('description');
+            
+            $table->unique(array('leader_id','monster1_id','monster2_id','monster3_id','monster4_id','friend_id','dungeon_id','hp','stone'), 'unique_index');
 		});
 	}
 

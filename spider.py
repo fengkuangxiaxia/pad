@@ -206,8 +206,8 @@ def dungeonsSpider():
         conn.close()
 
 #获取一个地下城的通关队伍
-def getOneTeam(dungeonName):
-    url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page1/'
+def getOneTeam(dungeonName, pageNumber):
+    url = 'http://pad.skyozora.com/team/' + dungeonName + '/Page' + str(pageNumber) + '/'
     #url = 'http://localhost/pad/a.html'
     content = urllib2.urlopen(url).read()
 
@@ -267,7 +267,13 @@ def getOneTeam(dungeonName):
                 elif(stone == -1):
                     stone = hpAndStone[0]
                 else:
+                    print hp
+                    print stone
                     print hpAndStone
+                    with open('./error.txt','wb') as f:
+                        for e in teamRaw:
+                            f.write(e + '\n')
+                    f.close()
             #爬取宠物
             monster = re.findall(monsterPattern, i)
             if(len(monster) > 0):
@@ -307,13 +313,51 @@ def teamsSpider():
     conn.select_db('pad')
 
     try:
-        cur.execute('select `name` from `dungeons` where `level` = 3')
-        dungeonNames = cur.fetchall()
-        
-        dungeonName = dungeonNames[-3][0]
-        dungeonName = urllib.quote(dungeonName.encode('utf8'))
-        page,teams = getOneTeam(dungeonName)
-        print page
+        cur.execute('select `id`,`name` from `dungeons` where `level` = 3 and UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(`updated_at`) > 86400 order by `id`')
+        dungeons = cur.fetchall()
+        testDungeons = [dungeons[0]]
+
+        for dungeon in dungeons:
+            dungeonId = dungeon[0]
+            dungeonName = dungeon[1]
+
+            flag = True
+            i = 1
+            try:
+                print dungeonName + ' start'
+                while(flag):
+                    print 'page' + str(i),
+                    page,teams = getOneTeam(urllib.quote(dungeonName.encode('utf8')), i)
+                    for team in teams:
+                        if(len(team['monsters']) != 6):
+                            continue
+                        leader_id = team['monsters'][0]
+                        monster1_id = team['monsters'][1]
+                        monster2_id = team['monsters'][2]
+                        monster3_id = team['monsters'][3]
+                        monster4_id = team['monsters'][4]
+                        friend_id = team['monsters'][5]
+                        dungeon_id = dungeonId
+                        hp = team['hp']
+                        stone = team['stone']
+                        description = team['description']
+                        if((friend_id != 0) and (friend_id != '0')):
+                            cur.execute('insert ignore into teams(`leader_id`, `monster1_id`, `monster2_id`, `monster3_id`, `monster4_id`, `friend_id`, `dungeon_id`, `hp`, `stone`, `description`) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', [leader_id, monster1_id, monster2_id, monster3_id, monster4_id, friend_id, dungeon_id, hp, stone, description])
+                    if((str(i) == page) or ('0' == page)):
+                        flag = False
+                    else:
+                        i = i + 1
+                print
+                print dungeonName + ' ok'
+                cur.execute('UPDATE `dungeons` SET `updated_at` = CURRENT_TIME() WHERE `id` = ' + str(dungeonId))
+                conn.commit()
+            except Exception, e:
+                print dungeonName + ' page' + str(i) + ' error'
+                print team['monsters']
+                exstr = traceback.format_exc()
+                print exstr
+            finally:
+                conn.commit()
         
     except Exception, e:
         exstr = traceback.format_exc()
@@ -326,6 +370,6 @@ def teamsSpider():
 def main():
     #monsterSpider()
     #dungeonsSpider()
-    #teamsSpider()
+    teamsSpider()
 
 main()

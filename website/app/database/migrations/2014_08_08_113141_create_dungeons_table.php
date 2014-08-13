@@ -19,6 +19,8 @@ class CreateDungeonsTable extends Migration {
             $table->integer('father_id')->unsigned()->nullable();
             
             $table->foreign('father_id')->references('id')->on('dungeons')->onDelete('cascade');
+            
+            $table->unique(array('name','level'));
 		});
 	}
 
