@@ -242,7 +242,7 @@ def getOneTeam(dungeonName, pageNumber):
     teamRaw = []
     while(i < len(lines)):
         teamRaw.append(lines[i])
-        if(lines[i].find('<a href="team/') != -1):
+        if((lines[i].find('<a href="team/') != -1) or (lines[i] == '<td>/</td>')):
             teamsRaw.append(teamRaw)
             teamRaw = []
         i = i + 1
@@ -314,6 +314,7 @@ def teamsSpider():
 
     try:
         cur.execute('select `id`,`name` from `dungeons` where `level` = 3 and UNIX_TIMESTAMP(NOW())-UNIX_TIMESTAMP(`updated_at`) > 86400 order by `id`')
+        #cur.execute('select `id`,`name` from `dungeons` where `level` = 3 order by `id`')
         dungeons = cur.fetchall()
         testDungeons = [dungeons[0]]
 
