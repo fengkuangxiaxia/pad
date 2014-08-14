@@ -24,6 +24,10 @@ $is_active = function ($name='') use ($active)
                     <div class="navbar-collapse collapse">
                         <ul class="nav navbar-nav">
                             <li{{ $is_active('home') }}><a href="{{ route('home') }}">首页</a></li>
+                            @if(Auth::user()){{--用户--}}
+                                <li{{ $is_active('monster') }}><a href="{{ route('monster') }}">我的宠物</a></li>
+                                <li{{ $is_active('team') }}><a href="{{ route('team') }}">队伍匹配</a></li>
+                            @endif
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             @if(Auth::guest()){{--游客--}}

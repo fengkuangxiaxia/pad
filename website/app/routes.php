@@ -48,3 +48,28 @@ Route::group(array(), function () {
     # 首页
     Route::get(            '/', array('as' => 'home'            , 'uses' => $Home.'showWelcome'));
 });
+
+/*
+|--------------------------------------------------------------------------
+| 宠物
+|--------------------------------------------------------------------------
+*/
+Route::group(array('prefix' => 'monster', 'before' => 'auth'), function () {
+    $Monster = 'MonsterController@';
+    # 宠物首页
+    Route::get('monster', array('as' => 'monster', 'uses' => $Monster.'getIndex'));
+    Route::post('monster', $Monster.'saveMonsters');
+    # 获取用户宠物
+    Route::get('userMonster', array('as' => 'userMonster', 'uses' => $Monster.'getUserMonster'));
+});
+
+/*
+|--------------------------------------------------------------------------
+| 队伍
+|--------------------------------------------------------------------------
+*/
+Route::group(array('prefix' => 'team', 'before' => 'auth'), function () {
+    $Team = 'TeamController@';
+    # 队伍首页
+    Route::get('team', array('as' => 'team', 'uses' => $Team.'getIndex'));
+});

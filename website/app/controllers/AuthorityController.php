@@ -8,10 +8,7 @@ class AuthorityController extends BaseController
      */
     public function getSignin()
     {
-        $data['title'] = "登录";
-		$data['heading'] = "登录";
-        $data['blank'] = 1;
-        return View::make('authority.signin', $data);
+        return View::make('authority.signin');
     }
     
     /**
