@@ -57,8 +57,8 @@ Route::group(array(), function () {
 Route::group(array('prefix' => 'monster', 'before' => 'auth'), function () {
     $Monster = 'MonsterController@';
     # 宠物首页
-    Route::get('monster', array('as' => 'monster', 'uses' => $Monster.'getIndex'));
-    Route::post('monster', $Monster.'saveMonsters');
+    Route::get('index', array('as' => 'monster.index', 'uses' => $Monster.'getIndex'));
+    Route::post('index', $Monster.'saveMonsters');
     # 获取用户宠物
     Route::get('userMonster', array('as' => 'userMonster', 'uses' => $Monster.'getUserMonster'));
 });
@@ -71,5 +71,9 @@ Route::group(array('prefix' => 'monster', 'before' => 'auth'), function () {
 Route::group(array('prefix' => 'team', 'before' => 'auth'), function () {
     $Team = 'TeamController@';
     # 队伍首页
-    Route::get('team', array('as' => 'team', 'uses' => $Team.'getIndex'));
+    Route::get('index', array('as' => 'team.index', 'uses' => $Team.'getIndex'));
+    # 获取地下城列表
+    Route::get('dungeon', array('as' => 'dungeon', 'uses' => $Team.'getDungeons'));
+    # 获取地下城匹配的队伍
+    Route::post('index', $Team.'getTeams');
 });

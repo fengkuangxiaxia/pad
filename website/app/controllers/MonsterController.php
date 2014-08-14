@@ -21,7 +21,7 @@ class MonsterController extends BaseController
             }
         }
         
-        return View::make('monster.monster', $data);
+        return View::make('monster.index', $data);
     }
 
     /**
@@ -35,14 +35,15 @@ class MonsterController extends BaseController
         
         UserMonster::where('user_id', '=', $user_id)->delete();
         
-        foreach($monsters as $monster) {
-            $temp = new UserMonster;
-            $temp->user_id = $user_id;
-            $temp->monster_id = $monster;
-            $temp->save();
+        if($monsters){
+            foreach($monsters as $monster) {
+                $temp = new UserMonster;
+                $temp->user_id = $user_id;
+                $temp->monster_id = $monster;
+                $temp->save();
+            }
         }
-        
-        return Redirect::route('monster');
+        return Redirect::route('monster.index');
     }
     
     /**
