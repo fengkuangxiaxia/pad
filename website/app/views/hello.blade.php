@@ -20,11 +20,29 @@
 		a, a:visited {
 			text-decoration:none;
 		}
+        
+        .close{ background-color:black}
+        
 @stop
 <body>
 	<div class="welcome">
-		<a href="" title="PAD">{{HTML::image('img/logo.png')}}</a>
-        <h1>You have arrived.</h1>
+        @if($rand < 9)
+            <a href="{{ route('home') }}" title="PAD">{{HTML::image('img/monsters/797.jpg')}}</a>
+            <h1>You have arrived.</h1>
+        @else
+            <a href="{{ route('home') }}" title="PAD">{{HTML::image('img/monsters/1323.jpg')}}</a>
+            <h1>I am watching you.</h1>
+        @endif
 	</div>
 </body>
+
+@section('end')
+    @parent
+    <script>
+        if($('h1').text() == 'I am watching you.'){
+            $("body div[class!='welcome']").addClass("close");
+            $("body").addClass("close");
+        }
+    </script>
+@stop
 </html>
