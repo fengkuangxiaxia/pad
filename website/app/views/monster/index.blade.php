@@ -22,6 +22,10 @@
         opacity: 0.4;
         filter: alpha(opacity=40);
     } 
+    
+    .remove {
+        display: none;
+    }
 @stop
 
 @section('container')
@@ -30,12 +34,15 @@
         <div class="row">
             <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
         </div>
+        <div class="row" style="margin-bottom: 10px;">
+            <span class="label label-primary" id="controllAll" style="cursor:pointer;">全部收起</span>
+        </div>
         @foreach($monsters as $key => $series)
-            <div id="{{$key}}">
-                <div class="row" style="margin-bottom: 10px;">
-                    <span class="label label-default">{{$key}}</span>
+            <div>
+                <div class="row series" style="margin-bottom: 10px;">
+                    <span class="label label-default" id="{{$key}}" style="cursor:pointer;">{{$key}}</span>
                 </div>
-                <div class="row">
+                <div class="row series_img" id="{{$key.'_monsters'}}">
                     @foreach($series as $monster)
                         <label class="checkbox greyOut" id="label_{{$monster->id}}" >
                             <input class="input_checkbox" type="checkbox" name="checkbox[]" value="{{$monster->id}}" id="checkbox_{{$monster->id}}" style="display:none">
@@ -88,6 +95,29 @@
                 else {
                     label.addClass('greyOut');
                     checkbox.checked = false; 
+                }
+            });
+            
+            $('.series').click(function(){
+                var id = $(this).attr("id");
+                var imgId = id + '_monsters';
+                var imgs = $(this).next();
+                if(imgs.attr("class").indexOf('remove') >= 0) {
+                    imgs.removeClass("remove");                    
+                }
+                else {
+                    imgs.addClass('remove');
+                }
+            });
+            
+            $('#controllAll').click(function(){
+                if($(this).text() == '全部收起') {
+                    $('.series_img').addClass('remove');
+                    $(this).text('全部展开');
+                }
+                else {
+                    $('.series_img').removeClass('remove');
+                    $(this).text('全部收起');
                 }
             });
         });
