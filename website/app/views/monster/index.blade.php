@@ -1,6 +1,6 @@
 @extends('l.monster', array('active' => 'monster'))
 
-@section('title') 我的宠物 @parent @stop
+@section('title') @parent 我的宠物  @stop
 
 @section('style')
     @parent
@@ -27,11 +27,13 @@
 @section('container')
 
     {{ Form::open(array('class' => 'form-monster', 'role' => 'form')) }}
-        <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+        <div class="row">
+            <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+        </div>
         @foreach($monsters as $key => $series)
             <div id="{{$key}}">
-                <div class="row">
-                    <label class="text">{{$key}}</label>
+                <div class="row" style="margin-bottom: 10px;">
+                    <span class="label label-default">{{$key}}</span>
                 </div>
                 <div class="row">
                     @foreach($series as $monster)

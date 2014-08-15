@@ -1,6 +1,6 @@
 @extends('l.team', array('active' => 'team'))
 
-@section('title') 队伍匹配 @parent @stop
+@section('title') @parent 队伍匹配  @stop
 
 @section('style')
     @parent

@@ -32,9 +32,11 @@ Route::group(array('prefix' => 'auth'), function () {
         # 注册
         Route::get(                   'signup', array('as' => 'signup'        , 'uses' => $Authority.'getSignup'));
         Route::post(                  'signup', $Authority.'postSignup');
-        # 密码重置
-        Route::get(  'forgot-password/{token}', array('as' => 'reset'         , 'uses' => $Authority.'getReset'));
-        Route::post( 'forgot-password/{token}', $Authority.'postReset');
+    });
+    Route::group(array('before' => 'auth'), function () use ($Authority) {
+        # 密码修改
+        Route::get(  'changePassword', array('as' => 'changePassword', 'uses' => $Authority.'getChangePassword'));
+        Route::post( 'changePassword', $Authority.'postChangePassword');
     });
 });
 

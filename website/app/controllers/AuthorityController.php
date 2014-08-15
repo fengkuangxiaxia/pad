@@ -99,44 +99,63 @@ class AuthorityController extends BaseController
     }
 
     /**
-     * 页面：进行密码重置
+     * 页面：修改密码
      * @return Response
      */
-    public function getReset($token)
+    public function getChangePassword()
     {
-        // 数据库中无令牌，抛出404
-        is_null(PassowrdReminder::where('token', $token)->first()) AND App::abort(404);
-        return View::make('authority.password.reset')->with('token', $token);
+        return View::make('authority.changePassword');
     }
-
+    
     /**
-     * 动作：进行密码重置
+     * 动作：修改密码
      * @return Response
      */
-    public function postReset()
+    public function postChangePassword()
     {
-        // 调用系统自带密码重置流程
-        $credentials = Input::only(
-            'username', 'password', 'password_confirmation', 'token'
+        // 获取所有表单数据.
+        $data = Input::all();
+        // 创建验证规则
+        $rules = array(
+            'old_password'    => 'required|alpha_dash|between:6,16',
+            'password' => 'required|alpha_dash|between:6,16|confirmed',
         );
-
-        $response = Password::reset($credentials, function ($user, $password) {
-            // 保存新密码
-            $user->password = $password;
-            $user->save();
-            // 登录用户
-            Auth::attempt($credentials);
-        });
-
-        switch ($response) {
-            case Password::INVALID_PASSWORD:
-                // no break
-            case Password::INVALID_TOKEN:
-                // no break
-            case Password::INVALID_USER:
-                return Redirect::back()->with('error', Lang::get($response));
-            case Password::PASSWORD_RESET:
-                return Redirect::to('/');
+        // 自定义验证消息
+        $messages = array(
+            'old_password.required'   => '请输入旧密码。',
+            'old_password.alpha_dash' => '旧密码格式不正确。',
+            'old_password.between'    => '旧密码长度错误。',
+            'password.required'   => '请输入密码。',
+            'password.alpha_dash' => '密码格式不正确。',
+            'password.between'    => '密码长度请保持在:min到:max位之间。',
+            'password.confirmed'  => '两次输入的密码不一致。',
+        );
+        // 开始验证
+        $validator = Validator::make($data, $rules, $messages);
+        if ($validator->passes()) {
+            if (Auth::validate(array('username' => Auth::user()->username, 'password' => Input::get('old_password')))) {
+                $user = User::find(Auth::user()->id);
+                $user->password = Hash::make(Input::get('password'));
+                if ($user->save()) {
+                    // 修改成功
+                    return Redirect::route('home');
+                } else {
+                    // 修改失败
+                    return Redirect::back()
+                        ->withInput()
+                        ->withErrors(array('old_password' => '修改失败。'));
+                }
+            }
+            else {
+                return Redirect::back()
+                        ->withInput()
+                        ->withErrors(array('old_password' => '旧密码错误。'));
+            }
+        } else {
+            // 验证失败，跳回
+            return Redirect::back()
+                ->withInput()
+                ->withErrors($validator);
         }
     }
 

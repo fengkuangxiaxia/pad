@@ -1,6 +1,6 @@
 @extends('l.authority', array('active' => 'signin'))
 
-@section('title') 登录 @parent @stop
+@section('title') @parent 登录  @stop
 
 @section('style')
     @parent

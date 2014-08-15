@@ -40,6 +40,7 @@ $is_active = function ($name='') use ($active)
                                         <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
+                                        <li><a href="{{ route('changePassword') }}">修改密码</a></li>
                                         <li class="divider"></li>
                                         <li><a href="{{ route('logout') }}">退出</a></li>
                                     </ul>
@@ -51,6 +52,7 @@ $is_active = function ($name='') use ($active)
                                         <b class="caret"></b>
                                     </a>
                                     <ul class="dropdown-menu">
+                                        <li><a href="{{ route('changePassword') }}">修改密码</a></li>
                                         <li class="divider"></li>
                                         <li><a href="{{ route('logout') }}">退出</a></li>
                                     </ul>

@@ -1,6 +1,6 @@
 @extends('l.authority', array('active' => 'signup'))
 
-@section('title') 注册 @parent @stop
+@section('title') @parent 注册 @stop
 
 @section('style')
     @parent
