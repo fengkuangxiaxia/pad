@@ -52,14 +52,18 @@
                 </div>
             </div>
         @endforeach
+        <div class="row">
+            <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+        </div>
     {{ Form::close() }}
 
 @stop
 
 @section('end')
     @parent
+    
     <script>
-        $(document).ready(function(){  
+        $(document).ready(function(){              
             $.ajax({
                 type: 'GET',
                 url: "/monster/userMonster/",
