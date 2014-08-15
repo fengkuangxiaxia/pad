@@ -96,9 +96,25 @@ def getOne(number, useProxy):
 
     return monsterData
 
+#获取当前最大编号
+def getMonsterMaxNumber():
+    url = 'http://pad.skyozora.com/'
+    content = urllib2.urlopen(url).read()  
+
+    #名字
+    numberPattern = re.compile(r'<option value=(\d*?)>')
+    number = re.findall(numberPattern, content)
+    if(len(number) > 0):
+        return number[-1]
+    else:
+        return -1
+
 #抓取宠物信息
 def monsterSpider(useProxy = False):
-    maxNumber = input('请输入上限:\n')
+    maxNumber = getMonsterMaxNumber()
+
+    if(maxNumber == -1):
+        return
     
     conn = MySQLdb.connect(host = 'localhost', user=dbUser, passwd=dbPassword, port=3306, charset = 'utf8')
     cur = conn.cursor()
@@ -390,7 +406,7 @@ def teamsSpider():
         conn.close()
         
 def main():
-    #monsterSpider()
+    monsterSpider()
     dungeonsSpider()
     teamsSpider()
 
