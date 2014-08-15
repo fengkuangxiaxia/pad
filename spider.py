@@ -7,8 +7,8 @@ import os
 import shutil
 import traceback
 
-dbUser = 'root'
-dbPassword = ''
+dbUser = 'pad'
+dbPassword = 'CMHJFt3dRmv4VvAJ'
 
 proxy_handler = urllib2.ProxyHandler({'http': '127.0.0.1:8087'})
 null_proxy_handler = urllib2.ProxyHandler({})
