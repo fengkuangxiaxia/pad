@@ -46,7 +46,7 @@
         <div class="input-group">
             <input name="password" type="password" class="form-control" placeholder="密码" required>
             <span class="input-group-btn">
-                <button class="btn btn-default" type="button" data-toggle="popover" data-content="请使用字母、数字、下划线、中划线。长度在6-16位之间。">?</button>
+                <button style="padding:11px 12px;" class="btn btn-default" type="button" data-toggle="popover" data-content="请使用字母、数字、下划线、中划线。长度在6-16位之间。">?</button>
             </span>
         </div>
         {{ $errors->first('password', '<strong class="error">:message</strong>') }}
