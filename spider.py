@@ -6,11 +6,10 @@ import MySQLdb
 import os
 import shutil
 import traceback
-'''
-import sys
-reload(sys)   
-sys.setdefaultencoding('utf8')
-'''
+
+dbUser = 'root'
+dbPassword = ''
+
 proxy_handler = urllib2.ProxyHandler({'http': '127.0.0.1:8087'})
 null_proxy_handler = urllib2.ProxyHandler({})
 
@@ -101,7 +100,7 @@ def getOne(number, useProxy):
 def monsterSpider(useProxy = False):
     maxNumber = input('请输入上限:\n')
     
-    conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
+    conn = MySQLdb.connect(host = 'localhost', user=dbUser, passwd=dbPassword, port=3306, charset = 'utf8')
     cur = conn.cursor()
     conn.select_db('pad')
     
@@ -129,7 +128,7 @@ def monsterSpider(useProxy = False):
 
 #抓取地下城信息
 def dungeonsSpider():
-    conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
+    conn = MySQLdb.connect(host = 'localhost', user=dbUser, passwd=dbPassword, port=3306, charset = 'utf8')
     cur = conn.cursor()
     conn.select_db('pad')
 
@@ -157,8 +156,14 @@ def dungeonsSpider():
                     tempNode = nodeData[0].split(',')
                     tempNodePattern = re.compile(r'\"(.*?)\"')
                     level1Name = re.findall(tempNodePattern, tempNode[0])[0]
-                    cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level1Name,1])
-                    conn.commit()
+                    
+                    cur.execute('select count(*) from dungeons where name like %s and level = %s', [level1Name,1])
+                    count = cur.fetchone()
+                    count = count[0]                    
+
+                    if(count == 0):
+                        cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level1Name,1])
+                        conn.commit()
         #插入2级3级节点    
         for dungeons in allDungeons:
             temp = dungeons.strip('\n').split('\n')
@@ -173,8 +178,14 @@ def dungeonsSpider():
                     tempNode = nodeData[0].split(',')
                     tempNodePattern = re.compile(r'\"(.*?)\"')
                     level2Name = re.findall(tempNodePattern, tempNode[0])[0]
-                    cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level2Name,2])
-                    conn.commit()
+
+                    cur.execute('select count(*) from dungeons where name like %s and level = %s', [level2Name,2])
+                    count = cur.fetchone()
+                    count = count[0]
+
+                    if(count == 0):
+                        cur.execute('insert ignore into dungeons(name,level) values(%s,%s)', [level2Name,2])
+                        conn.commit()
                     cur.execute('select `id` from `dungeons` where `name` like \'' + level2Name + '\'')
                     level2id = cur.fetchone()[0]
                     if(not results.has_key(name)):
@@ -183,7 +194,12 @@ def dungeonsSpider():
                     level3Name = tempNode[1:]
                     for i in range(len(level3Name)):
                         level3Name[i] = re.findall(tempNodePattern, level3Name[i])[0]
-                        cur.execute('insert ignore into dungeons(name,level,father_id) values(%s,%s,%s)', [level3Name[i],3,level2id])            
+
+                        cur.execute('select count(*) from dungeons where name like %s and level = %s', [level3Name[i],3])
+                        count = cur.fetchone()
+                        count = count[0]
+                        if(count == 0):
+                            cur.execute('insert ignore into dungeons(name,level,father_id) values(%s,%s,%s)', [level3Name[i],3,level2id])            
             else:
                 nodes = temp[2:-1]
                 for node in nodes:
@@ -308,7 +324,7 @@ def getOneTeam(dungeonName, pageNumber):
     '''
 
 def teamsSpider():
-    conn = MySQLdb.connect(host = 'localhost', user='root', passwd='', port=3306, charset = 'utf8')
+    conn = MySQLdb.connect(host = 'localhost', user=dbUser, passwd=dbPassword, port=3306, charset = 'utf8')
     cur = conn.cursor()
     conn.select_db('pad')
 
@@ -343,7 +359,12 @@ def teamsSpider():
                         stone = team['stone']
                         description = team['description']
                         if((friend_id != 0) and (friend_id != '0')):
-                            cur.execute('insert ignore into teams(`leader_id`, `monster1_id`, `monster2_id`, `monster3_id`, `monster4_id`, `friend_id`, `dungeon_id`, `hp`, `stone`, `description`) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', [leader_id, monster1_id, monster2_id, monster3_id, monster4_id, friend_id, dungeon_id, hp, stone, description])
+                            cur.execute('select count(*) from teams where leader_id = %s and monster1_id = %s and monster2_id = %s and monster3_id = %s and monster4_id = %s and friend_id = %s and dungeon_id = %s and hp = %s and stone = %s and description like %s', [leader_id, monster1_id, monster2_id, monster3_id, monster4_id, friend_id, dungeon_id, hp, stone, description])
+                            count = cur.fetchone()
+                            count = count[0]
+
+                            if(count == 0):
+                                cur.execute('insert ignore into teams(`leader_id`, `monster1_id`, `monster2_id`, `monster3_id`, `monster4_id`, `friend_id`, `dungeon_id`, `hp`, `stone`, `description`) values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)', [leader_id, monster1_id, monster2_id, monster3_id, monster4_id, friend_id, dungeon_id, hp, stone, description])
                     if((str(i) == page) or ('0' == page)):
                         flag = False
                     else:
@@ -370,7 +391,7 @@ def teamsSpider():
         
 def main():
     #monsterSpider()
-    #dungeonsSpider()
+    dungeonsSpider()
     teamsSpider()
 
 main()
