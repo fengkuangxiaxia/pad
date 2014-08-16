@@ -9,7 +9,9 @@ import traceback
 import socket
 
 import sys  
-reload(sys)  
+stdin, stdout, stderr = sys.stdin, sys.stdout, sys.stderr
+reload(sys)
+sys.stdin, sys.stdout, sys.stderr = stdin, stdout, stderr  
 sys.setdefaultencoding('utf-8')
 
 socket.setdefaulttimeout(30) 
@@ -140,6 +142,8 @@ def monsterSpider(useProxy = False):
                     if(temp['name'] != ''):
                         results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
                 except Exception, e:
+                    exstr = traceback.format_exc()
+                    print exstr
                     print str(i + 1) + " getOne error"
     except Exception, e:
         exstr = traceback.format_exc()
@@ -398,7 +402,7 @@ def teamsSpider():
                         i = i + 1
                 print
                 print dungeonName + ' ok'
-                cur.execute('UPDATE `dungeons` SET `updated_at` = CURRENT_TIME() WHERE `id` = ' + str(dungeonId))
+                cur.execute('UPDATE `dungeons` SET `updated_at` = NOW() WHERE `id` = ' + str(dungeonId))
                 conn.commit()
             except Exception, e:
                 print dungeonName + ' page' + str(i) + ' error'
