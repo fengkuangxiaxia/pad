@@ -6,7 +6,11 @@ import MySQLdb
 import os
 import shutil
 import traceback
-import socket 
+import socket
+
+import sys  
+reload(sys)  
+sys.setdefaultencoding('utf-8')
 
 socket.setdefaulttimeout(30) 
 dbUser = 'pad'
