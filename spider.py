@@ -6,7 +6,9 @@ import MySQLdb
 import os
 import shutil
 import traceback
+import socket 
 
+socket.setdefaulttimeout(30) 
 dbUser = 'pad'
 dbPassword = 'CMHJFt3dRmv4VvAJ'
 
@@ -17,10 +19,10 @@ null_proxy_handler = urllib2.ProxyHandler({})
 def getOne(number, useProxy):
     monsterData = {}
     monsterData['id'] = number
+    monsterData['name'] = ''
     
     url = 'http://pad.skyozora.com/pets/' + str(number)
-    content = urllib2.urlopen(url).read()  
-
+    content = urllib2.urlopen(url).read()
     #名字
     namePattern = re.compile(r'<title>(.*?)</title>')
     name = re.findall(namePattern, content)
@@ -31,7 +33,7 @@ def getOne(number, useProxy):
     pattern = re.compile(r'<table(.*)</table>')
     result = re.findall(pattern, content)
 
-    if(len(result) == 1):
+    if(len(result) >= 1):
         pattern = re.compile(r'<table(.*?)</table>')
         result = re.findall(pattern, result[0])
         '''
@@ -92,7 +94,7 @@ def getOne(number, useProxy):
             print len(result)
             print str(number) + ' table number error'
     else:
-        print str(number) + ' error'
+        print str(number) + ' no data error'
 
     return monsterData
 
@@ -129,11 +131,16 @@ def monsterSpider(useProxy = False):
             
             if(count == 0):
                 print i + 1
-                temp = getOne(1 + i, useProxy)
-                if(temp['name'] != ''):
-                    results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
-    except:
-        print str(results[-1][0] + 1) + " getOne error"
+                try:
+                    temp = getOne(1 + i, useProxy)
+                    if(temp['name'] != ''):
+                        results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
+                except Exception, e:
+                    print str(i + 1) + " getOne error"
+    except Exception, e:
+        exstr = traceback.format_exc()
+        print exstr
+        print "for error"
     finally:
         cur.executemany('insert into monsters values(%s,%s,%s,%s)', results)
         conn.commit()
