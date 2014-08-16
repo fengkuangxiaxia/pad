@@ -54,7 +54,7 @@ def getOne(number, useProxy):
             if(len(imgUrl) == 1):
                 imgUrlResult = imgUrl[0].split('"')[1]
                 monsterData['thumbImg'] = imgUrlResult
-                path = r"./website/public/img/monsters/" + str(number) + ".jpg"
+                path = os.getcwd() + "/website/public/img/monsters/" + str(number) + ".jpg"
                 if(useProxy):
                     opener = urllib2.build_opener(proxy_handler)
                 else:
@@ -65,7 +65,7 @@ def getOne(number, useProxy):
                         f.write(urllib2.urlopen(imgUrlResult).read())
                 except:
                     os.remove(path)
-                    shutil.copyfile('./website/public/img/monsters/0.jpg', path)
+                    shutil.copyfile(os.getcwd() + '/website/public/img/monsters/0.jpg', path)
                     print str(number) + ' img error'
                 finally:
                     f.close()
