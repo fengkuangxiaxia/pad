@@ -53,10 +53,18 @@ class TeamController extends BaseController
         $userId = Auth::user()->id;
         
         $userMonsters = Monster::whereIn('id', UserMonster::where('user_id', '=', $userId)->lists('monster_id'))->lists('id');
+           
+        //$teams = Team::where('dungeon_id', '=', $dungeon_id)->get();
+        $teams = DB::table('teams')->where('dungeon_id', '=', $dungeon_id)
+            ->leftJoin('monsters as LEADER', 'teams.leader_id', '=', 'LEADER.id')
+            ->leftJoin('monsters as MONSTER1', 'teams.monster1_id', '=', 'MONSTER1.id')
+            ->leftJoin('monsters as MONSTER2', 'teams.monster2_id', '=', 'MONSTER2.id')
+            ->leftJoin('monsters as MONSTER3', 'teams.monster3_id', '=', 'MONSTER3.id')
+            ->leftJoin('monsters as MONSTER4', 'teams.monster4_id', '=', 'MONSTER4.id')
+            ->leftJoin('monsters as FRIEND', 'teams.friend_id', '=', 'FRIEND.id')
+            ->select('teams.*', 'LEADER.name as leader_name', 'MONSTER1.name as monster1_name', 'MONSTER2.name as monster2_name', 'MONSTER3.name as monster3_name', 'MONSTER4.name as monster4_name', 'FRIEND.name as friend_name')
+            ->get();
         
-        //$teams = Team::where('dungeon_id', '=', $dungeon_id)->whereIn('leader_id', $userMonsters)->whereIn('monster1_id', $userMonsters)->whereIn('monster2_id', $userMonsters)->whereIn('monster3_id', $userMonsters)->whereIn('monster4_id', $userMonsters)->get();
-        
-        $teams = Team::where('dungeon_id', '=', $dungeon_id)->get();
 
         $teamsFull = array();
         $teams1 = array();
@@ -100,25 +108,7 @@ class TeamController extends BaseController
             else {
                 array_push($no, 'friend_id');
             }
-            /*
-            $resultTeam = $team->toArray();
-            $resultTeam['leader_name'] = $team->leader->name;
-            $resultTeam['monster1_name'] = $team->monster1->name;
-            $resultTeam['monster2_name'] = $team->monster2->name;
-            $resultTeam['monster3_name'] = $team->monster3->name;
-            $resultTeam['monster4_name'] = $team->monster4->name;
-            $resultTeam['friend_name'] = $team->friend->name;
-            
-            if($count == 6) {
-                array_push($teamsFull, array('team'=>$resultTeam,'no'=>$no));
-            }
-            else if($count == 5) {
-                array_push($teams1, array('team'=>$resultTeam,'no'=>$no));
-            }
-            else if($count == 4) {
-                array_push($teams2, array('team'=>$resultTeam,'no'=>$no));
-            }
-            */
+
             if($count == 6) {
                 array_push($teamsFull, array('team'=>$team,'no'=>$no));
             }

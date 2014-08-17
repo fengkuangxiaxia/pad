@@ -126,20 +126,22 @@
                                 var no = data[key][i]['no'];
 
                                 description = '<p style=\"width:400px;\">' + description + '</p>';
-                                /*
+                                
                                 var leader = '<img src="../img/monsters/' + leader_id + '.jpg" title=\"No.' + leader_id + ' ' + data[key][i]['team'].leader_name + '\"/>';
                                 var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg" title=\"No.' + monster1_id + ' ' + data[key][i]['team'].monster1_name + '\"/>';
                                 var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg" title=\"No.' + monster2_id + ' ' + data[key][i]['team'].monster2_name + '\"/>';
                                 var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg" title=\"No.' + monster3_id + ' ' + data[key][i]['team'].monster3_name + '\"/>';
                                 var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg" title=\"No.' + monster4_id + ' ' + data[key][i]['team'].monster4_name + '\"/>';                        
                                 var friend = '<img src="../img/monsters/' + friend_id + '.jpg" title=\"No.' + friend_id + ' ' + data[key][i]['team'].friend_name + '\"/>';
-                                */
+                                
+                                /*
                                 var leader = '<img src="../img/monsters/' + leader_id + '.jpg" title=\"No.' + leader_id + '\"/>';
                                 var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg" title=\"No.' + monster1_id + '\"/>';
                                 var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg" title=\"No.' + monster2_id + '\"/>';
                                 var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg" title=\"No.' + monster3_id + '\"/>';
                                 var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg" title=\"No.' + monster4_id + '\"/>';                        
                                 var friend = '<img src="../img/monsters/' + friend_id + '.jpg" title=\"No.' + friend_id + '\"/>';
+                                */
                                 
                                 for(j in no) {
                                     if(no[j] == 'leader_id') {
