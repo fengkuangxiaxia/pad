@@ -8,7 +8,7 @@ class TeamController extends BaseController
      */
     public function getIndex()
     {
-        return View::make('team.index');
+        return View::make('team.index',array('tableClasses'=>array('teamsFull','teams1','teams2')));
     }
     
     /**
@@ -57,90 +57,10 @@ class TeamController extends BaseController
         //$teams = Team::where('dungeon_id', '=', $dungeon_id)->whereIn('leader_id', $userMonsters)->whereIn('monster1_id', $userMonsters)->whereIn('monster2_id', $userMonsters)->whereIn('monster3_id', $userMonsters)->whereIn('monster4_id', $userMonsters)->get();
         
         $teams = Team::where('dungeon_id', '=', $dungeon_id)->get();
-        /*
-        $full = $teams->filter(function($team) use($userMonsters){
-            $count = 0;
-            if(in_array($team->leader_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster1_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster2_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster3_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster4_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->friend_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            
-            if($count == 6){
-                return $team;
-            }
-        });
-        
-        $one = $teams->filter(function($team) use($userMonsters){
-            $count = 0;
-            if(in_array($team->leader_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster1_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster2_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster3_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster4_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->friend_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            
-            if($count == 5){
-                return $team;
-            }
-        });
-        
-        $two = $teams->filter(function($team) use($userMonsters){
-            $count = 0;
-            if(in_array($team->leader_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster1_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster2_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster3_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->monster4_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            if(in_array($team->friend_id, $userMonsters)) {
-                $count = $count + 1;
-            }
-            
-            if($count == 4){
-                return $team;
-            }
-        });
-        
-        return json_encode(array('full'=>$full,'one'=>$one,'two'=>$two));
-        */
-        $full = array();
-        $one = array();
-        $two = array();
+
+        $teamsFull = array();
+        $teams1 = array();
+        $teams2 = array();
         foreach($teams as $team) {
             $count = 0;
             $no = array();
@@ -182,15 +102,15 @@ class TeamController extends BaseController
             }
             
             if($count == 6) {
-                array_push($full, $team);
+                array_push($teamsFull, array('team'=>$team,'no'=>$no));
             }
             else if($count == 5) {
-                array_push($one, array('team'=>$team,'no'=>$no));
+                array_push($teams1, array('team'=>$team,'no'=>$no));
             }
             else if($count == 4) {
-                array_push($two, array('team'=>$team,'no'=>$no));
+                array_push($teams2, array('team'=>$team,'no'=>$no));
             }
         }
-        return json_encode(array('full'=>$full,'one'=>$one,'two'=>$two));
+        return json_encode(array('teamsFull'=>$teamsFull,'teams1'=>$teams1,'teams2'=>$teams2));
     }
 }
