@@ -1,4 +1,7 @@
 @extends('l.authority', array('active' => 'home'))
+
+@section('title') @parent 首页  @stop
+
 @section('style')
 
 		body {

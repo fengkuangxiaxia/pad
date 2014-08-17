@@ -1,6 +1,6 @@
 @extends('l.base')
 
-@section('title') 队伍匹配 @parent @stop
+@section('title') PAD @parent @stop
 
 @section('beforeStyle')
     @include('css')

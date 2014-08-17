@@ -1,6 +1,6 @@
 @extends('l.base')
 
-@section('title') 我的宠物 @parent @stop
+@section('title') PAD @parent @stop
 
 @section('beforeStyle')
     @include('css')
