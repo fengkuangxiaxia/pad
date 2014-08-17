@@ -125,6 +125,8 @@
                                 var description = data[key][i]['team'].description;
                                 var no = data[key][i]['no'];
                                 
+                                description = '<p style=\"width:400px;\">' + description + '</p>';
+                                
                                 var leader = '<img src="../img/monsters/' + leader_id + '.jpg"/>';
                                 var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg"/>';
                                 var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg"/>';
@@ -154,7 +156,9 @@
                                 }                            
                                 var members = monster1 + monster2 + monster3 + monster4;
                                 
-                                $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td style=\"widht:408px;\">'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
+                                members = '<div class=\"row\">' + members + '</div>';
+                                
+                                $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
                             }
                             
                             if(key == 'teamsFull'){
