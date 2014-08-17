@@ -6,7 +6,15 @@ import MySQLdb
 import os
 import shutil
 import traceback
+import socket
 
+import sys  
+stdin, stdout, stderr = sys.stdin, sys.stdout, sys.stderr
+reload(sys)
+sys.stdin, sys.stdout, sys.stderr = stdin, stdout, stderr  
+sys.setdefaultencoding('utf-8')
+
+socket.setdefaulttimeout(30) 
 dbUser = 'pad'
 dbPassword = 'CMHJFt3dRmv4VvAJ'
 
@@ -17,10 +25,10 @@ null_proxy_handler = urllib2.ProxyHandler({})
 def getOne(number, useProxy):
     monsterData = {}
     monsterData['id'] = number
+    monsterData['name'] = ''
     
     url = 'http://pad.skyozora.com/pets/' + str(number)
-    content = urllib2.urlopen(url).read()  
-
+    content = urllib2.urlopen(url).read()
     #名字
     namePattern = re.compile(r'<title>(.*?)</title>')
     name = re.findall(namePattern, content)
@@ -31,7 +39,7 @@ def getOne(number, useProxy):
     pattern = re.compile(r'<table(.*)</table>')
     result = re.findall(pattern, content)
 
-    if(len(result) == 1):
+    if(len(result) >= 1):
         pattern = re.compile(r'<table(.*?)</table>')
         result = re.findall(pattern, result[0])
         '''
@@ -46,7 +54,7 @@ def getOne(number, useProxy):
             if(len(imgUrl) == 1):
                 imgUrlResult = imgUrl[0].split('"')[1]
                 monsterData['thumbImg'] = imgUrlResult
-                path = r"./website/public/img/monsters/" + str(number) + ".jpg"
+                path = sys.path[0] + "/website/public/img/monsters/" + str(number) + ".jpg"
                 if(useProxy):
                     opener = urllib2.build_opener(proxy_handler)
                 else:
@@ -57,7 +65,7 @@ def getOne(number, useProxy):
                         f.write(urllib2.urlopen(imgUrlResult).read())
                 except:
                     os.remove(path)
-                    shutil.copyfile('./website/public/img/monsters/0.jpg', path)
+                    shutil.copyfile(sys.path[0] + '/website/public/img/monsters/0.jpg', path)
                     print str(number) + ' img error'
                 finally:
                     f.close()
@@ -92,7 +100,7 @@ def getOne(number, useProxy):
             print len(result)
             print str(number) + ' table number error'
     else:
-        print str(number) + ' error'
+        print str(number) + ' no data error'
 
     return monsterData
 
@@ -129,11 +137,18 @@ def monsterSpider(useProxy = False):
             
             if(count == 0):
                 print i + 1
-                temp = getOne(1 + i, useProxy)
-                if(temp['name'] != ''):
-                    results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
-    except:
-        print str(results[-1][0] + 1) + " getOne error"
+                try:
+                    temp = getOne(1 + i, useProxy)
+                    if(temp['name'] != ''):
+                        results.append((temp['id'], temp['name'], temp['series'], temp['thumbImg']))
+                except Exception, e:
+                    exstr = traceback.format_exc()
+                    print exstr
+                    print str(i + 1) + " getOne error"
+    except Exception, e:
+        exstr = traceback.format_exc()
+        print exstr
+        print "for error"
     finally:
         cur.executemany('insert into monsters values(%s,%s,%s,%s)', results)
         conn.commit()
@@ -387,7 +402,7 @@ def teamsSpider():
                         i = i + 1
                 print
                 print dungeonName + ' ok'
-                cur.execute('UPDATE `dungeons` SET `updated_at` = CURRENT_TIME() WHERE `id` = ' + str(dungeonId))
+                cur.execute('UPDATE `dungeons` SET `updated_at` = NOW() WHERE `id` = ' + str(dungeonId))
                 conn.commit()
             except Exception, e:
                 print dungeonName + ' page' + str(i) + ' error'

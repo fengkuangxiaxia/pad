@@ -48,92 +48,36 @@
       <li><a id="teams2Text" href="#teams2">差2匹配</a></li> 
     </ul> 
     <div class="tab-content"> 
-        <div class="tab-pane active" id="teamsFull">
-            <table class="table" id="teamsFullTable">
-                <thead>
-                    <tr>
-                      <th>
-                        队长
-                      </th>
-                      <th style="width:408px">
-                        队员
-                      </th>
-                      <th>
-                        战友 
-                      </th>
-                      <th>
-                        队伍血量
-                      </th>
-                      <th>
-                        使用魔法石
-                      </th>
-                      <th>
-                        简单描述
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-            </table>
-        </div> 
-        
-        <div class="tab-pane" id="teams1">
-            <table class="table" id="teams1Table">
-                <thead>
-                    <tr>
-                      <th>
-                        队长
-                      </th>
-                      <th style="width:408px">
-                        队员
-                      </th>
-                      <th>
-                        战友 
-                      </th>
-                      <th>
-                        队伍血量
-                      </th>
-                      <th>
-                        使用魔法石
-                      </th>
-                      <th>
-                        简单描述
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-            </table>
-        </div>
-        
-        <div class="tab-pane" id="teams2">
-            <table class="table" id="teams2Table">
-                <thead>
-                    <tr>
-                      <th>
-                        队长
-                      </th>
-                      <th style="width:408px">
-                        队员
-                      </th>
-                      <th>
-                        战友 
-                      </th>
-                      <th>
-                        队伍血量
-                      </th>
-                      <th>
-                        使用魔法石
-                      </th>
-                      <th>
-                        简单描述
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-            </table>
-        </div>
+        @foreach($tableClasses as $key => $tableClass)
+            <div class="tab-pane {{($key == 0) ? 'active' : ''}}" id="{{$tableClass}}">
+                <table class="table" id="{{$tableClass}}Table">
+                    <thead>
+                        <tr>
+                          <th>
+                            队长
+                          </th>
+                          <th style="width:408px">
+                            队员
+                          </th>
+                          <th>
+                            战友 
+                          </th>
+                          <th>
+                            队伍血量
+                          </th>
+                          <th>
+                            使用魔法石
+                          </th>
+                          <th>
+                            简单描述
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                </table>
+            </div> 
+        @endforeach
     </div>
 
 @stop
@@ -165,122 +109,77 @@
                     data: {'dungeon_id':$("#dungeon_id").val()},
                     async: true,
                     success: function(data){
-                        $("#teamsFullTable>tbody").empty();
-                        var count = 0;
-                        for(i in data['full']){
-                            count = count + 1;
-                            var leader_id = data['full'][i].leader_id;
-                            var monster1_id = data['full'][i].monster1_id;
-                            var monster2_id = data['full'][i].monster2_id;
-                            var monster3_id = data['full'][i].monster3_id;
-                            var monster4_id = data['full'][i].monster4_id;
-                            var friend_id = data['full'][i].friend_id;
-                            var hp = data['full'][i].hp;
-                            var stone = data['full'][i].stone;
-                            var description = data['full'][i].description;
+                        for (key in data){
+                            $("#" + key + "Table>tbody").empty();
+                            var count = 0;
+                            for(i in data[key]){
+                                count = count + 1;
+                                var leader_id = data[key][i]['team'].leader_id;
+                                var monster1_id = data[key][i]['team'].monster1_id;
+                                var monster2_id = data[key][i]['team'].monster2_id;
+                                var monster3_id = data[key][i]['team'].monster3_id;
+                                var monster4_id = data[key][i]['team'].monster4_id;
+                                var friend_id = data[key][i]['team'].friend_id;
+                                var hp = data[key][i]['team'].hp;
+                                var stone = data[key][i]['team'].stone;
+                                var description = data[key][i]['team'].description;
+                                var no = data[key][i]['no'];
+
+                                description = '<p style=\"width:400px;\">' + description + '</p>';
+                                
+                                var leader = '<img src="../img/monsters/' + leader_id + '.jpg" title=\"No.' + leader_id + ' ' + data[key][i]['team'].leader_name + '\"/>';
+                                var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg" title=\"No.' + monster1_id + ' ' + data[key][i]['team'].monster1_name + '\"/>';
+                                var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg" title=\"No.' + monster2_id + ' ' + data[key][i]['team'].monster2_name + '\"/>';
+                                var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg" title=\"No.' + monster3_id + ' ' + data[key][i]['team'].monster3_name + '\"/>';
+                                var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg" title=\"No.' + monster4_id + ' ' + data[key][i]['team'].monster4_name + '\"/>';                        
+                                var friend = '<img src="../img/monsters/' + friend_id + '.jpg" title=\"No.' + friend_id + ' ' + data[key][i]['team'].friend_name + '\"/>';
+                                
+                                /*
+                                var leader = '<img src="../img/monsters/' + leader_id + '.jpg" title=\"No.' + leader_id + '\"/>';
+                                var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg" title=\"No.' + monster1_id + '\"/>';
+                                var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg" title=\"No.' + monster2_id + '\"/>';
+                                var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg" title=\"No.' + monster3_id + '\"/>';
+                                var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg" title=\"No.' + monster4_id + '\"/>';                        
+                                var friend = '<img src="../img/monsters/' + friend_id + '.jpg" title=\"No.' + friend_id + '\"/>';
+                                */
+                                
+                                for(j in no) {
+                                    if(no[j] == 'leader_id') {
+                                        leader = '<img class="greyOut"' + leader.slice(leader.indexOf('<img'));
+                                    }
+                                    else if(no[j] == 'monster1_id') {
+                                        monster1 = '<img class="greyOut"' + monster1.slice(monster1.indexOf('<img'));
+                                    }
+                                    else if(no[j] == 'monster2_id') {
+                                        monster2 = '<img class="greyOut"' + monster2.slice(monster2.indexOf('<img'));
+                                    }
+                                    else if(no[j] == 'monster3_id') {
+                                        monster3 = '<img class="greyOut"' + monster3.slice(monster3.indexOf('<img'));
+                                    }
+                                    else if(no[j] == 'monster4_id') {
+                                        monster4 = '<img class="greyOut"' + monster4.slice(monster4.indexOf('<img'));
+                                    }
+                                    else if(no[j] == 'friend_id') {
+                                        friend = '<img class="greyOut"' + friend.slice(friend.indexOf('<img'));
+                                    }
+                                }                            
+                                var members = monster1 + monster2 + monster3 + monster4;
+                                
+                                members = '<div class=\"row\">' + members + '</div>';
+                                
+                                $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
+                            }
                             
-                            var leader = '<img src="../img/monsters/' + leader_id + '.jpg"/>';
-                            var members = '<img src="../img/monsters/' + monster1_id + '.jpg"/>'+'<img src="../img/monsters/' + monster2_id + '.jpg"/>'+'<img src="../img/monsters/' + monster3_id + '.jpg"/>'+'<img src="../img/monsters/' + monster4_id + '.jpg"/>';
-                            var friend = '<img src="../img/monsters/' + friend_id + '.jpg"/>';
-                            $("#teamsFullTable>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
+                            if(key == 'teamsFull'){
+                                $('#' + key + 'Text').text('完全匹配(' + count + ')');
+                            }
+                            else if(key == 'teams1'){
+                                $('#' + key + 'Text').text('差1匹配(' + count + ')');
+                            }
+                            else if(key == 'teams2'){
+                                $('#' + key + 'Text').text('差2匹配(' + count + ')');
+                            }
                         }
-                        $('#teamsFullText').text('完全匹配(' + count + ')');
-                        
-                        $("#teams1Table>tbody").empty();
-                        count = 0;
-                        for(i in data['one']){
-                            count = count + 1;
-                            var leader_id = data['one'][i]['team'].leader_id;
-                            var monster1_id = data['one'][i]['team'].monster1_id;
-                            var monster2_id = data['one'][i]['team'].monster2_id;
-                            var monster3_id = data['one'][i]['team'].monster3_id;
-                            var monster4_id = data['one'][i]['team'].monster4_id;
-                            var friend_id = data['one'][i]['team'].friend_id;
-                            var hp = data['one'][i]['team'].hp;
-                            var stone = data['one'][i]['team'].stone;
-                            var description = data['one'][i]['team'].description;
-                            var no = data['one'][i]['no'];
-                            
-                            var leader = '<img src="../img/monsters/' + leader_id + '.jpg"/>';
-                            var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg"/>';
-                            var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg"/>';
-                            var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg"/>';
-                            var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg"/>';                            
-                            var friend = '<img src="../img/monsters/' + friend_id + '.jpg"/>';
-                            
-                            for(j in no) {
-                                if(no[j] == 'leader_id') {
-                                    leader = '<img class="greyOut"' + leader.slice(leader.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster1_id') {
-                                    monster1 = '<img class="greyOut"' + monster1.slice(monster1.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster2_id') {
-                                    monster2 = '<img class="greyOut"' + monster2.slice(monster2.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster3_id') {
-                                    monster3 = '<img class="greyOut"' + monster3.slice(monster3.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster4_id') {
-                                    monster4 = '<img class="greyOut"' + monster4.slice(monster4.indexOf('<img'));
-                                }
-                                else if(no[j] == 'friend_id') {
-                                    friend = '<img class="greyOut"' + friend.slice(friend.indexOf('<img'));
-                                }
-                            }                            
-                            var members = monster1 + monster2 + monster3 + monster4;
-                            
-                            $("#teams1Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
-                        }
-                        $('#teams1Text').text('差1匹配(' + count + ')');
-                        
-                        $("#teams2Table>tbody").empty();
-                        count = 0;                        
-                        for(i in data['two']){
-                            count = count + 1;
-                            var leader_id = data['two'][i]['team'].leader_id;
-                            var monster1_id = data['two'][i]['team'].monster1_id;
-                            var monster2_id = data['two'][i]['team'].monster2_id;
-                            var monster3_id = data['two'][i]['team'].monster3_id;
-                            var monster4_id = data['two'][i]['team'].monster4_id;
-                            var friend_id = data['two'][i]['team'].friend_id;
-                            var hp = data['two'][i]['team'].hp;
-                            var stone = data['two'][i]['team'].stone;
-                            var description = data['two'][i]['team'].description;
-                            var no = data['two'][i]['no'];
-                            
-                            var leader = '<img src="../img/monsters/' + leader_id + '.jpg"/>';
-                            var monster1 = '<img src="../img/monsters/' + monster1_id + '.jpg"/>';
-                            var monster2 = '<img src="../img/monsters/' + monster2_id + '.jpg"/>';
-                            var monster3 = '<img src="../img/monsters/' + monster3_id + '.jpg"/>';
-                            var monster4 = '<img src="../img/monsters/' + monster4_id + '.jpg"/>';                            
-                            var friend = '<img src="../img/monsters/' + friend_id + '.jpg"/>';
-                            
-                            for(j in no) {
-                                if(no[j] == 'leader_id') {
-                                    leader = '<img class="greyOut"' + leader.slice(leader.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster1_id') {
-                                    monster1 = '<img class="greyOut"' + monster1.slice(monster1.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster2_id') {
-                                    monster2 = '<img class="greyOut"' + monster2.slice(monster2.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster3_id') {
-                                    monster3 = '<img class="greyOut"' + monster3.slice(monster3.indexOf('<img'));
-                                }
-                                else if(no[j] == 'monster4_id') {
-                                    monster4 = '<img class="greyOut"' + monster4.slice(monster4.indexOf('<img'));
-                                }
-                                else if(no[j] == 'friend_id') {
-                                    friend = '<img class="greyOut"' + friend.slice(friend.indexOf('<img'));
-                                }
-                            }                            
-                            var members = monster1 + monster2 + monster3 + monster4;
-                            
-                            $("#teams2Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
-                        }
-                        $('#teams2Text').text('差2匹配(' + count + ')');
                     },
                     dataType: "json"
                 });//end of $.ajax
