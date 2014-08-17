@@ -36,6 +36,18 @@
         opacity: 0.4;
         filter: alpha(opacity=40);
     }
+    
+    #teamsFullTable td div{
+        white-space: nowrap;
+    }
+    
+    #teams1Table td div{
+        white-space: nowrap;
+    }
+    
+    #teams2Table td div{
+        white-space: nowrap;
+    }
 @stop
 
 @section('container')
