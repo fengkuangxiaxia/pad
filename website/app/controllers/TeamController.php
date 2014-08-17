@@ -100,7 +100,25 @@ class TeamController extends BaseController
             else {
                 array_push($no, 'friend_id');
             }
+            /*
+            $resultTeam = $team->toArray();
+            $resultTeam['leader_name'] = $team->leader->name;
+            $resultTeam['monster1_name'] = $team->monster1->name;
+            $resultTeam['monster2_name'] = $team->monster2->name;
+            $resultTeam['monster3_name'] = $team->monster3->name;
+            $resultTeam['monster4_name'] = $team->monster4->name;
+            $resultTeam['friend_name'] = $team->friend->name;
             
+            if($count == 6) {
+                array_push($teamsFull, array('team'=>$resultTeam,'no'=>$no));
+            }
+            else if($count == 5) {
+                array_push($teams1, array('team'=>$resultTeam,'no'=>$no));
+            }
+            else if($count == 4) {
+                array_push($teams2, array('team'=>$resultTeam,'no'=>$no));
+            }
+            */
             if($count == 6) {
                 array_push($teamsFull, array('team'=>$team,'no'=>$no));
             }
