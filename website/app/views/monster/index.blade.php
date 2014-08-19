@@ -29,16 +29,29 @@
 @stop
 
 @section('container')
-
     {{ Form::open(array('class' => 'form-monster', 'role' => 'form')) }}
         <div class="row">
-            <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+            <div class="col-lg-12">
+                <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-3">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchText" placeholder="宠物id">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="searchButton">Search</button>
+                    </span>
+                </div><!-- /input-group -->
+            </div><!-- /.col-lg-6 -->
         </div>
         <div class="row" style="margin-bottom: 10px;">
-            <span class="label label-primary" id="controllAll" style="cursor:pointer;">全部收起</span>
+            <div class="col-lg-12">
+                <span class="label label-primary" id="controllAll" style="cursor:pointer;">全部收起</span>
+            </div>
         </div>
         @foreach($monsters as $key => $series)
-            <div>
+            <div class="col-lg-12">
                 <div class="row series" style="margin-bottom: 10px;">
                     <span class="label label-default" id="{{$key}}" style="cursor:pointer;">{{$key}}</span>
                 </div>
@@ -53,7 +66,9 @@
             </div>
         @endforeach
         <div class="row">
-            <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+            <div class="col-lg-12">
+                <button class="btn btn-lg btn-success btn-block" type="submit">保存</button>
+            </div>
         </div>
     {{ Form::close() }}
 
@@ -123,6 +138,14 @@
                     $('.series_img').removeClass('remove');
                     $(this).text('全部收起');
                 }
+            });
+            
+            $('#searchButton').click(function(){
+                var id = $('#searchText').val();
+                var pos = $('#img_' + id).offset().top;
+                var headerHeight = $('.navbar-collapse').height();
+                var seriesHeight = $('.label').height();
+                $("html,body").animate({scrollTop: pos - headerHeight - seriesHeight}, 1000);
             });
         });
     </script>
