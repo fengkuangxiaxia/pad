@@ -175,11 +175,22 @@
                                         friend = '<img class="greyOut"' + friend.slice(friend.indexOf('<img'));
                                     }
                                 }                            
-                                var members = monster1 + monster2 + monster3 + monster4;
+                                var members = '<div class="row">' + monster1 + monster2 + monster3 + monster4 + '</div>';
                                 
-                                members = '<div class=\"row\">' + members + '</div>';
+                                leader = '<div id="leader_' + count + '" rel="popover">' + leader + '</div>';
                                 
                                 $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
+                                
+                                /*popover测试代码,待技能抓取完成
+                                var image = '<img src="../img/monsters/' + leader_id + '.jpg">';
+                                $("#leader_" + count).popover({
+                                    html: true,
+                                    animation: false,
+                                    title: "相同技能的宠",
+                                    content: image,
+                                    placement: "bottom"
+                                });
+                                */
                             }
                             
                             if(key == 'teamsFull'){
