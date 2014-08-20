@@ -205,8 +205,13 @@
                                             url: "/team/sameSkillMonsters/" + id,
                                             async: false,
                                             success: function(data){
-                                                for (i in data){
-                                                    sameSkillMonsters = sameSkillMonsters + '<img src="../img/monsters/' + data[i].id + '.jpg"' + ' title=\"No.' + data[i].id + ' ' + data[i].name + '\"/>';
+                                                if(data == '无技能') {
+                                                    sameSkillMonsters = '无技能';
+                                                }
+                                                else {
+                                                    for (i in data){
+                                                        sameSkillMonsters = sameSkillMonsters + '<img src="../img/monsters/' + data[i].id + '.jpg"' + ' title=\"No.' + data[i].id + ' ' + data[i].name + '\"/>';
+                                                    }
                                                 }
                                             },
                                             dataType: "json"

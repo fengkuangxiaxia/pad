@@ -138,7 +138,13 @@ class TeamController extends BaseController
      */
     public function getSameSkillMonsters($id)
     {
-        $ids = Monster::whereIn('skill_id', Monster::where('id', '=', $id)->lists('skill_id'))->orderBy('id')->get();
-        return $ids;
+        $skill = Skill::whereIn('id', Monster::where('id', '=', $id)->lists('skill_id'))->lists('name');
+        if(in_array('無', $skill)){
+            return json_encode('无技能');
+        }
+        else {
+            $ids = Monster::whereIn('skill_id', Monster::where('id', '=', $id)->lists('skill_id'))->orderBy('id')->get();
+            return $ids;
+        }
     }
 }
