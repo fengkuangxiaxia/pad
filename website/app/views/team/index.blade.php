@@ -48,6 +48,11 @@
     #teams2Table td div{
         white-space: nowrap;
     }
+    
+    .popover {
+        width:auto;
+        max-width: 1500px;
+    }
 @stop
 
 @section('container')
@@ -174,23 +179,43 @@
                                     else if(no[j] == 'friend_id') {
                                         friend = '<img class="greyOut"' + friend.slice(friend.indexOf('<img'));
                                     }
-                                }                            
-                                var members = '<div class="row">' + monster1 + monster2 + monster3 + monster4 + '</div>';
+                                }    
+
+                                leader = '<div class="popover-click" rel="popover">' + leader + '</div>';       
+                                monster1 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster1 + '</div>'; 
+                                monster2 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster2 + '</div>';       
+                                monster3 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster3 + '</div>';       
+                                monster4 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster4 + '</div>';       
+                                friend = '<div class="popover-click" rel="popover">' + friend + '</div>';       
                                 
-                                leader = '<div id="leader_' + count + '" rel="popover">' + leader + '</div>';
+                                var members = '<div class="row">' + monster1 + monster2 + monster3 + monster4 + '</div>';
                                 
                                 $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
                                 
-                                /*popover测试代码,待技能抓取完成
-                                var image = '<img src="../img/monsters/' + leader_id + '.jpg">';
-                                $("#leader_" + count).popover({
+                                $('.popover-click').popover({
                                     html: true,
                                     animation: false,
-                                    title: "相同技能的宠",
-                                    content: image,
+                                    title: "相同技能的宠物",
+                                    content: function(){
+                                        var imgSrc = $(this).children().attr('src');
+                                        var id = imgSrc.slice(imgSrc.indexOf('../img/monsters/') + '../img/monsters/'.length, imgSrc.indexOf('.jpg'));
+                                        var sameSkillMonsters = '';
+                                        $.ajax({
+                                            type: 'GET',
+                                            url: "/team/sameSkillMonsters/" + id,
+                                            async: false,
+                                            success: function(data){
+                                                for (i in data){
+                                                    sameSkillMonsters = sameSkillMonsters + '<img src="../img/monsters/' + data[i].id + '.jpg"' + ' title=\"No.' + data[i].id + ' ' + data[i].name + '\"/>';
+                                                }
+                                            },
+                                            dataType: "json"
+                                        });//end of $.ajax
+                                        return sameSkillMonsters;
+                                    },
                                     placement: "bottom"
                                 });
-                                */
+                                
                             }
                             
                             if(key == 'teamsFull'){

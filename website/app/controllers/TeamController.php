@@ -131,4 +131,14 @@ class TeamController extends BaseController
         }
         return json_encode(array('teamsFull'=>$teamsFull,'teams1'=>$teams1,'teams2'=>$teams2));
     }
+    
+    /**
+     * 页面：获取相同技能的宠物
+     * @return json
+     */
+    public function getSameSkillMonsters($id)
+    {
+        $ids = Monster::whereIn('skill_id', Monster::where('id', '=', $id)->lists('skill_id'))->orderBy('id')->get();
+        return $ids;
+    }
 }

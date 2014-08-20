@@ -78,4 +78,6 @@ Route::group(array('prefix' => 'team', 'before' => 'auth'), function () {
     Route::get('dungeon', array('as' => 'dungeon', 'uses' => $Team.'getDungeons'));
     # 获取地下城匹配的队伍
     Route::post('index', $Team.'getTeams');
+    # 获取相同技能的宠物
+    Route::get('sameSkillMonsters/{id}', array('as' => 'sameSkillMonsters', 'uses' => $Team.'getSameSkillMonsters'));
 });
