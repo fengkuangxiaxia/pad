@@ -109,6 +109,16 @@ class TeamController extends BaseController
                 array_push($no, 'friend_id');
             }
 
+            /*寻找相同技能宠物,效率过低
+            foreach ($teams as &$team) {
+                $team->leader_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->leader_id)->lists('skill_id'))->lists('id');
+                $team->monster1_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->monster1_id)->lists('skill_id'))->lists('id');
+                $team->monster2_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->monster2_id)->lists('skill_id'))->lists('id');
+                $team->monster3_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->monster3_id)->lists('skill_id'))->lists('id');
+                $team->monster4_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->monster4_id)->lists('skill_id'))->lists('id');
+                $team->friend_skill = Monster::whereIn('skill_id', Monster::where('id', '=', $team->friend_id)->lists('skill_id'))->lists('id');
+            }
+            */
             if($count == 6) {
                 array_push($teamsFull, array('team'=>$team,'no'=>$no));
             }
