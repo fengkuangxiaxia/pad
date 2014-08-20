@@ -7,7 +7,7 @@ import os
 import shutil
 import traceback
 import socket
-
+import getopt
 import sys  
 stdin, stdout, stderr = sys.stdin, sys.stdout, sys.stderr
 reload(sys)
@@ -419,10 +419,84 @@ def teamsSpider():
         conn.commit()
         cur.close()
         conn.close()
+
+
+#根据宠物编号获取宠物技能
+def getSkill(number):
+    skill = ''
+    
+    url = 'http://pad.skyozora.com/pets/' + str(number)
+    content = urllib2.urlopen(url).read()
+
+    pattern = re.compile(r'<table(.*)</table>')
+    result = re.findall(pattern, content)
+
+    if(len(result) >= 1):
+        pattern = re.compile(r'<table(.*?)</table>')
+        result = re.findall(pattern, result[0])
+
+        if(len(result) >= 8):
+            #技能
+            skillPattern = re.compile(r'<a href="skill/(.*?)">')
+            for i in result:
+                if(i.find('主動技能') >= 0):
+                    skill = re.findall(skillPattern, i)
+                    if(len(skill) == 1):
+                        skill = urllib.unquote(skill[0])
+                    else:
+                        print str(number) + ' skill error'
+                    break            
+        else:
+            print len(result)
+            print str(number) + ' table number error'
+    else:
+        print str(number) + ' no data error'
+
+    return skill
+
+#更新宠物技能
+def skillSpider():
+    conn = MySQLdb.connect(host = 'localhost', user=dbUser, passwd=dbPassword, port=3306, charset = 'utf8')
+    cur = conn.cursor()
+    conn.select_db('pad')
+
+    try:
+        cur.execute('SELECT `id` FROM `monsters` WHERE `skill_id` IS NULL')
+        ids = cur.fetchall()
+        for i in ids:
+            monster_id = i[0]
+            print 'update ' + str(monster_id) + ' skill'
+            skill = ''
+            try:
+                skill = getSkill(monster_id)
+            except Exception, e:
+                exstr = traceback.format_exc()
+                print exstr
+                print str(monster_id) + " getSkill error"
+            
+            if(skill != ''):
+                cur.execute('select count(*) from `skills` where name like %s', [skill])
+                count = cur.fetchone()
+                count = count[0]
+
+                if(count == 0):
+                    cur.execute('insert into skills(name) values(%s)', [skill])
+                cur.execute('select `id` from `skills` where name like %s', [skill])
+                skill_id = cur.fetchone()
+                skill_id = skill_id[0]
+
+                cur.execute('UPDATE `monsters` SET `skill_id` = %s WHERE `id` = %s', [skill_id, monster_id])
+                conn.commit()         
+    finally:
+        conn.commit()
+        cur.close()
+        conn.close()
         
 def main():
     monsterSpider()
+    skillSpider()
     dungeonsSpider()
     teamsSpider()
 
 main()
+
