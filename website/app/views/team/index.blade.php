@@ -181,12 +181,12 @@
                                     }
                                 }    
 
-                                leader = '<div class="popover-click" rel="popover">' + leader + '</div>';       
-                                monster1 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster1 + '</div>'; 
-                                monster2 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster2 + '</div>';       
-                                monster3 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster3 + '</div>';       
-                                monster4 = '<div class="popover-click" rel="popover" style="display:inline-block;">' + monster4 + '</div>';       
-                                friend = '<div class="popover-click" rel="popover">' + friend + '</div>';       
+                                leader = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + leader + '</div>';       
+                                monster1 = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + monster1 + '</div>'; 
+                                monster2 = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + monster2 + '</div>';       
+                                monster3 = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + monster3 + '</div>';       
+                                monster4 = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + monster4 + '</div>';       
+                                friend = '<div class="popover-click" rel="popover" style="display:inline-block;cursor:pointer;">' + friend + '</div>';       
                                 
                                 var members = '<div class="row">' + monster1 + monster2 + monster3 + monster4 + '</div>';
                                 
