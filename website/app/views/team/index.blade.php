@@ -232,6 +232,9 @@
                             },
                             placement: "bottom"
                         });
+                        $('.popover-click').on('click', function (e) {
+                            $('.popover-click').not(this).popover('hide');
+                        });
                     },
                     dataType: "json"
                 });//end of $.ajax
