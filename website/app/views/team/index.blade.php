@@ -192,35 +192,6 @@
                                 
                                 $("#" + key + "Table>tbody").append('<tr>'+'<td>'+leader+'</td>'+'<td>'+members+'</td>'+'<td>'+friend+'</td>'+'<td><b>'+hp+'</b></td>'+'<td><b>'+stone+'</b></td>'+'<td>'+description+'</td>'+'</tr>');
                                 
-                                $('.popover-click').popover({
-                                    html: true,
-                                    animation: false,
-                                    title: "相同技能的宠物",
-                                    content: function(){
-                                        var imgSrc = $(this).children().attr('src');
-                                        var id = imgSrc.slice(imgSrc.indexOf('../img/monsters/') + '../img/monsters/'.length, imgSrc.indexOf('.jpg'));
-                                        var sameSkillMonsters = '';
-                                        $.ajax({
-                                            type: 'GET',
-                                            url: "/team/sameSkillMonsters/" + id,
-                                            async: false,
-                                            success: function(data){
-                                                if(data == '无技能') {
-                                                    sameSkillMonsters = '无技能';
-                                                }
-                                                else {
-                                                    for (i in data){
-                                                        sameSkillMonsters = sameSkillMonsters + '<img src="../img/monsters/' + data[i].id + '.jpg"' + ' title=\"No.' + data[i].id + ' ' + data[i].name + '\"/>';
-                                                    }
-                                                }
-                                            },
-                                            dataType: "json"
-                                        });//end of $.ajax
-                                        return sameSkillMonsters;
-                                    },
-                                    placement: "bottom"
-                                });
-                                
                             }
                             
                             if(key == 'teamsFull'){
@@ -233,6 +204,34 @@
                                 $('#' + key + 'Text').text('差2匹配(' + count + ')');
                             }
                         }
+                        $('.popover-click').popover({
+                            html: true,
+                            animation: false,
+                            title: "相同技能的宠物",
+                            content: function(){
+                                var imgSrc = $(this).children().attr('src');
+                                var id = imgSrc.slice(imgSrc.indexOf('../img/monsters/') + '../img/monsters/'.length, imgSrc.indexOf('.jpg'));
+                                var sameSkillMonsters = '';
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "/team/sameSkillMonsters/" + id,
+                                    async: false,
+                                    success: function(data){
+                                        if(data == '无技能') {
+                                            sameSkillMonsters = '无技能';
+                                        }
+                                        else {
+                                            for (i in data){
+                                                sameSkillMonsters = sameSkillMonsters + '<img src="../img/monsters/' + data[i].id + '.jpg"' + ' title=\"No.' + data[i].id + ' ' + data[i].name + '\"/>';
+                                            }
+                                        }
+                                    },
+                                    dataType: "json"
+                                });//end of $.ajax
+                                return sameSkillMonsters;
+                            },
+                            placement: "bottom"
+                        });
                     },
                     dataType: "json"
                 });//end of $.ajax
