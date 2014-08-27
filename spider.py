@@ -150,7 +150,7 @@ def monsterSpider(useProxy = False):
         print exstr
         print "for error"
     finally:
-        cur.executemany('insert into monsters values(%s,%s,%s,%s)', results)
+        cur.executemany('insert into monsters(`id`, `name`, `series`, `img`) values(%s,%s,%s,%s)', results)
         conn.commit()
         
         #print results
