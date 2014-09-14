@@ -169,7 +169,21 @@ def dungeonsSpider():
         url = 'http://pad.skyozora.com/javascript/stage-clear.js'
         content = urllib2.urlopen(url).read()
         content = content[content.find('function dataHierarchy(){') + len('function dataHierarchy(){') + 1 : content.find('dataTree=dataHierarchy();') - 2]       
-        allDungeons = content.split('\n\n')
+        #allDungeons = content.split('\n\n')
+        allDungeons = []
+        dungeon = ''
+        for line in content.strip('\n').split('\n'):
+            if(line.find('new Array()') >= 0):
+                allDungeons.append(dungeon)
+                dungeon = line + '\n'
+            elif(line == ''):
+                continue
+            elif(line.find('return(output);') >= 0):
+                continue
+            else:
+                dungeon = dungeon + line + '\n'
+        allDungeons.append(dungeon)
+        allDungeons = allDungeons[1:]
 
         #优先插入顶级节点
         for dungeons in allDungeons:
